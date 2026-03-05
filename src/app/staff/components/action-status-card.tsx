@@ -6,7 +6,7 @@ export default function ActionStatusCard({ status }: { status?: string }) {
       case "inactive":
         return "bg-[#FFE5E5] border-[#ff6363] text-[#ff6363]";
       case "saved":
-        return "bg-yellow-500";
+        return "bg-[#E3FCDC] border-[#8EE667] text-[#7CC75D]";
       default:
         return "bg-gray-500";
     }

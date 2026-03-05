@@ -1,10 +1,10 @@
 "use client";
 import React from "react";
 import { useEffect, useState } from "react";
-import { getPusherClient } from "@/libs/pusher-websocket";
+import { usePusherConnection } from "@/contexts/pusher-context";
 import HeaderComponent from "@/components/header.component";
-import { FORM_ITEMS } from "@/app/patient/constants/form-constant";
 import ActionStatusCard from "./components/action-status-card";
+import { FORM_ITEMS } from "@/app/patient/constants/form-constant";
 
 type TFormDataPayload = {
   key: string;
@@ -13,14 +13,50 @@ type TFormDataPayload = {
   isFocused?: boolean;
 };
 
+const formatDateDDMMYYYY = (value?: string) => {
+  if (!value) return "";
+  const [year, month, day] = value.split("-");
+  if (!year || !month || !day) return value;
+
+  return `${day.padStart(2, "0")}/${month.padStart(2, "0")}/${year}`;
+};
+
+const formatFieldValue = (
+  item: (typeof FORM_ITEMS)[number],
+  value?: string,
+) => {
+  if (!value) return "";
+
+  if (item.type === "date") {
+    return formatDateDDMMYYYY(value);
+  }
+
+  return value;
+};
+
 export default function StaffPage() {
+  const { getPusherClient } = usePusherConnection();
   const formItems = FORM_ITEMS;
   const [actionStatus, setActionStatus] = useState<string | null>(null);
+  const [lastUpdate, setLastUpdate] = useState<number>(0);
   const [submissions, setSubmissions] = useState<
     Record<string, { value?: string; required?: boolean; isFocused?: boolean }>
   >({});
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = window.localStorage.getItem("staff-submissions");
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored) as Record<
+            string,
+            { value?: string; required?: boolean; isFocused?: boolean }
+          >;
+          setSubmissions(parsed);
+        } catch {}
+      }
+    }
+
     const pusher = getPusherClient();
     if (!pusher) {
       return;
@@ -28,15 +64,27 @@ export default function StaffPage() {
 
     const channel = pusher.subscribe("patient-form");
     channel.bind("update-form", (data: TFormDataPayload) => {
-      setSubmissions((prev) => ({
-        ...prev,
-        [data.key]: {
-          value: data.value,
-          required: data.required,
-          isFocused: data.isFocused,
-        },
-      }));
-      if (actionStatus !== "active") {
+      if (data.key === "form-clear") {
+        setSubmissions({});
+        setActionStatus(null);
+        localStorage.removeItem("staff-submissions");
+        console.log("form-clear");
+        return;
+      } else if (data.key === "submit") {
+        setSubmissions({});
+        setActionStatus("saved");
+        localStorage.removeItem("staff-submissions");
+        return;
+      } else {
+        setSubmissions((prev) => ({
+          ...prev,
+          [data.key]: {
+            value: data.value,
+            required: data.required,
+            isFocused: data.isFocused,
+          },
+        }));
+        setLastUpdate(Date.now());
         setActionStatus("active");
       }
     });
@@ -48,12 +96,30 @@ export default function StaffPage() {
   }, []);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(
+        "staff-submissions",
+        JSON.stringify(submissions),
+      );
+    }
+  }, [submissions]);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
     if (actionStatus === "active") {
-      setTimeout(() => {
+      timer = setTimeout(() => {
         setActionStatus("inactive");
+      }, 5000);
+    } else if (actionStatus === "saved") {
+      timer = setTimeout(() => {
+        setActionStatus(null);
       }, 10000);
     }
-  }, [actionStatus]);
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [actionStatus, lastUpdate]);
 
   return (
     <div className="w-full h-full flex flex-col my-8">
@@ -114,7 +180,7 @@ export default function StaffPage() {
                       : "border-[#d1d1d1]"
                   }`}
                 >
-                  {submissions[item.key]?.value ?? ""}
+                  {formatFieldValue(item, submissions[item.key]?.value)}
                 </div>
                 <p className={`text-xs ${"text-transparent"}`}>"&nbsp;"</p>
               </div>

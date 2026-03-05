@@ -1,3 +1,27 @@
+const PREFERRED_LANGUAGE_OPTIONS = [
+  { label: "Thai", value: "Thai" },
+  { label: "English", value: "English" },
+  { label: "Chinese", value: "Chinese" },
+  { label: "Japanese", value: "Japanese" },
+  { label: "Burmese", value: "Burmese" },
+  { label: "Lao", value: "Lao" },
+  { label: "Other", value: "Other" },
+];
+
+const NATIONALITY_OPTIONS = [
+  { label: "Thai", value: "Thai" },
+  { label: "American", value: "American" },
+  { label: "British", value: "British" },
+  { label: "Chinese", value: "Chinese" },
+  { label: "Japanese", value: "Japanese" },
+  { label: "Korean", value: "Korean" },
+  { label: "French", value: "French" },
+  { label: "German", value: "German" },
+  { label: "Australian", value: "Australian" },
+  { label: "Indian", value: "Indian" },
+  { label: "Other", value: "Other" },
+];
+
 export const FORM_ITEMS = [
   {
     label: "First Name",
@@ -6,6 +30,8 @@ export const FORM_ITEMS = [
     type: "text",
     required: true,
     placeholder: "Enter your first name",
+    value: "",
+    isFocused: false,
   },
   {
     label: "Middle Name",
@@ -14,6 +40,8 @@ export const FORM_ITEMS = [
     type: "text",
     required: false,
     placeholder: "Enter your middle name",
+    value: "",
+    isFocused: false,
   },
   {
     label: "Last Name",
@@ -22,6 +50,8 @@ export const FORM_ITEMS = [
     type: "text",
     required: true,
     placeholder: "Enter your last name",
+    value: "",
+    isFocused: false,
   },
   {
     label: "Date of Birth",
@@ -29,7 +59,9 @@ export const FORM_ITEMS = [
     inputType: "input",
     type: "date",
     required: true,
-    placeholder: "Enter your date of birth",
+    placeholder: "dd/mm/yyyy",
+    value: "",
+    isFocused: false,
   },
   {
     label: "Gender",
@@ -43,6 +75,8 @@ export const FORM_ITEMS = [
     ],
     required: true,
     placeholder: "Enter your gender",
+    value: "",
+    isFocused: false,
   },
   {
     label: "Phone Number",
@@ -52,6 +86,8 @@ export const FORM_ITEMS = [
     required: true,
     placeholder: "Enter your phone number",
     icon: "icon-phone.svg",
+    value: "",
+    isFocused: false,
   },
   {
     label: "Email",
@@ -61,6 +97,8 @@ export const FORM_ITEMS = [
     required: true,
     placeholder: "Enter your email",
     icon: "icon-email.svg",
+    value: "",
+    isFocused: false,
   },
   {
     label: "Address",
@@ -70,6 +108,8 @@ export const FORM_ITEMS = [
     required: true,
     placeholder: "Enter your address",
     icon: "icon-gps.svg",
+    value: "",
+    isFocused: false,
   },
   {
     label: "Preferred Language",
@@ -78,11 +118,10 @@ export const FORM_ITEMS = [
     type: "text",
     required: true,
     placeholder: "Enter your preferred language",
-    options: [
-      { label: "English", value: "English" },
-      { label: "Thai", value: "Thai" },
-    ],
+    options: PREFERRED_LANGUAGE_OPTIONS,
     icon: "icon-world.svg",
+    value: "",
+    isFocused: false,
   },
   {
     label: "Nationality",
@@ -91,10 +130,9 @@ export const FORM_ITEMS = [
     type: "text",
     required: true,
     placeholder: "Enter your nationality",
-    options: [
-      { label: "English", value: "English" },
-      { label: "Thai", value: "Thai" },
-    ],
+    options: NATIONALITY_OPTIONS,
+    value: "",
+    isFocused: false,
   },
   {
     label: "Contact Name",
@@ -103,6 +141,8 @@ export const FORM_ITEMS = [
     type: "text",
     required: false,
     placeholder: "Full Name",
+    value: "",
+    isFocused: false,
   },
   {
     label: "Relationship",
@@ -111,6 +151,8 @@ export const FORM_ITEMS = [
     type: "text",
     required: false,
     placeholder: "e.g. Spouse, Child, Parent, etc.",
+    value: "",
+    isFocused: false,
   },
   {
     label: "Religion",
@@ -119,5 +161,7 @@ export const FORM_ITEMS = [
     type: "text",
     required: false,
     placeholder: "Enter your religion",
+    value: "",
+    isFocused: false,
   },
 ];

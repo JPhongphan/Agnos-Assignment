@@ -15,6 +15,7 @@ export default function HeaderComponent({
     >
       <div className="flex gap-2">
         <Image
+          className="hidden sm:block"
           src="/assets/icons/icon-person.svg"
           alt="icon-person"
           width={30}
