@@ -1,30 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Agnos Assignment
 
-## Getting Started
+## Overview
 
-First, run the development server:
+This is a Next.js application that provides a **Patient Form** and a **Staff View** for capturing and monitoring patient information in real time.
 
-```bash
-npm run dev
-```
+- **Patient Form** (`/patient`): Patients fill in a validated form (personal details, contact, emergency contact, etc.). As they type, changes are sent to the backend and broadcast via Pusher.
+- **Staff View** (`/staff`): Staff see the same form fields updating live as the patient enters data. An action status card shows whether the session is active, inactive, or saved.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The app uses **React Hook Form** with **Zod** for validation, **Pusher** for real-time sync, and **Tailwind CSS** for styling. The root path `/` redirects to `/patient`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Setup Instructions
 
-## Learn More
+### Prerequisites
 
-To learn more about Next.js, take a look at the following resources:
+- **Node.js** (v18 or later recommended)
+- **npm** (or yarn/pnpm)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Steps
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **Clone the repository** (if not already done):
+   ```bash
+   git clone <repository-url>
+   cd Agnos-Assignment
+   ```
 
-## Deploy on Vercel
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. **Environment (optional)**  
+   The project can run with built-in development Pusher credentials. For production or custom keys, configure Pusher in your environment or in `src/libs/pusher-websocket.ts` (e.g. via `process.env`):
+   - `APP_PUSHER_ID`
+   - `APP_PUSHER_KEY`
+   - `APP_PUSHER_SECRET`
+   - `APP_PUSHER_CLUSTER`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. **Run the development server**:
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000). You will be redirected to `/patient`.
+
+5. **Build for production**:
+   ```bash
+   npm run build
+   npm start
+   ```
+
+6. **Lint**:
+   ```bash
+   npm run lint
+   ```
+
+---
+
+## Bonus Features
+
+- **Real-time sync**: Patient form field changes (focus, blur, change) are sent to the API and broadcast via Pusher so the Staff View updates live without refresh.
+- **Pusher connection status**: A React context exposes Pusher connection state (e.g. connecting, connected, error) for the app to use (e.g. UI indicators).
+- **Action status card (Staff View)**: Shows whether the current session is *active* (recent typing), *inactive* (no recent activity), or *saved* (form submitted), with automatic time-based transitions.
+- **Form validation**: Client-side validation with Zod and React Hook Form (required fields, email format, phone length, etc.) with inline error messages.
+- **Persistence in Staff View**: Current field values are stored in `localStorage` (`staff-submissions`) so they survive page refresh until the form is cleared or submitted.
+- **Clear / Submit handling**: “Form clear” and “Submit” actions are broadcast via Pusher so the Staff View clears or shows “saved” state in sync with the patient.

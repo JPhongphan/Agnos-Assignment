@@ -10,7 +10,7 @@ import {
   type PusherConnectionStatus,
   getPusherClientFromService,
   subscribeToPusherConnectionStatus,
-} from "@/services/pusher.service";
+} from "@/services/pusher";
 
 type PusherContextValue = {
   connectionStatus: PusherConnectionStatus;
@@ -21,11 +21,8 @@ const PusherContext = createContext<PusherContextValue | null>(null);
 export function PusherProvider({ children }: { children: React.ReactNode }) {
   const [connectionStatus, setConnectionStatus] =
     useState<PusherConnectionStatus>("initialized");
-  useEffect(() => {
-    const unsubscribe = subscribeToPusherConnectionStatus(setConnectionStatus);
-    return unsubscribe;
-  }, []);
-  const getPusherClient = useCallback(getPusherClientFromService, []);
+  useEffect(() => subscribeToPusherConnectionStatus(setConnectionStatus), []);
+  const getPusherClient = useCallback(() => getPusherClientFromService(), []);
   const value: PusherContextValue = {
     connectionStatus,
     getPusherClient,

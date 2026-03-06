@@ -28,7 +28,7 @@ export function subscribeToPusherConnectionStatus(
     return () => {};
   }
 
-  const connection = pusher.connection;
+  const { connection } = pusher;
 
   const handleStateChange = (states: { current: string }) => {
     const status = states.current as PusherConnectionStatus;
